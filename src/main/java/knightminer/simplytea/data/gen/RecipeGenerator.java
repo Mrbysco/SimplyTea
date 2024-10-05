@@ -111,7 +111,7 @@ public class RecipeGenerator extends RecipeProvider {
 
 		// advanced tea
 		addTea(consumer, cup_cocoa, Items.COCOA_BEANS, Items.COCOA_BEANS, teapot_frothed);
-		addHoney(consumer, RecipeCategory.MISC, cup_cocoa, tea_stick, CocoaItem.CINNAMON_TAG);
+		addHoney(consumer, RecipeCategory.FOOD, cup_cocoa, tea_stick, CocoaItem.CINNAMON_TAG);
 		addTea(consumer, cup_tea_chai, teabag_black, tea_stick, teapot_frothed);
 		addHoney(consumer, cup_tea_chai);
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, cup_tea_iced)
@@ -160,7 +160,7 @@ public class RecipeGenerator extends RecipeProvider {
 
 	/** Creates a recipe to add honey to a tea */
 	public static void addHoney(Consumer<FinishedRecipe> consumer, ItemLike tea) {
-		addHoney(consumer, RecipeCategory.MISC, tea, Items.HONEY_BOTTLE, TeaCupItem.HONEY_TAG);
+		addHoney(consumer, RecipeCategory.FOOD, tea, Items.HONEY_BOTTLE, TeaCupItem.HONEY_TAG);
 	}
 
 	/** Creates a recipe to "honey" to a tea */
