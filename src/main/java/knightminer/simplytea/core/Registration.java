@@ -24,22 +24,17 @@ import knightminer.simplytea.potion.RestfulEffect;
 import knightminer.simplytea.worldgen.TeaTreeFeature;
 import knightminer.simplytea.worldgen.TeaTreeGrower;
 import knightminer.simplytea.worldgen.TreeGenEnabledPlacement;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.BlockItem;
@@ -48,7 +43,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -56,27 +50,20 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -85,7 +72,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -286,31 +272,6 @@ public class Registration {
         return InteractionResult.PASS;
       });
     });
-  }
-
-  public static void configuredFeatures(BootstapContext<ConfiguredFeature<?, ?>> context) {
-    FeatureUtils.register(context, configured_tea_tree, tea_tree);
-  }
-
-  public static void placedFeatures(BootstapContext<PlacedFeature> context) {
-    HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(Registries.CONFIGURED_FEATURE);
-    PlacementUtils.register(context, placed_tea_tree, holdergetter.getOrThrow(configured_tea_tree), List.of(
-            TreeGenEnabledPlacement.INSTANCE,
-            RarityFilter.onAverageOnceEvery(128), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome(),
-            BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(tea_sapling.defaultBlockState(), BlockPos.ZERO)),
-            PlacementUtils.filteredByBlockSurvival(tea_sapling)
-    ));
-  }
-
-  public static void biomeModifiers(BootstapContext<BiomeModifier> context) {
-    HolderGetter<Biome> biomeGetter = context.lookup(Registries.BIOME);
-    HolderSet<Biome> forest = biomeGetter.getOrThrow(BiomeTags.IS_FOREST);
-
-    context.register(tea_tree_biome_modifier, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-            forest,
-            HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(placed_tea_tree)),
-            GenerationStep.Decoration.VEGETAL_DECORATION
-    ));
   }
 
   @SubscribeEvent
